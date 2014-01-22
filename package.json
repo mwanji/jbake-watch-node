@@ -1,0 +1,23 @@
+{
+  "name": "jbake-watch",
+  "version": "0.1.0",
+  "description": "Reload JBake when files change",
+  "main": "jbake-watch.js",
+  "scripts": {
+    "start": "node jbake-watch.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mwanji/jbake-watch-node"
+  },
+  "author": "Moandji Ezana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mwanji/jbake-watch-node/issues"
+  },
+  "homepage": "https://github.com/mwanji/jbake-watch-node",
+  "dependencies": {
+    "watch": "~0.8.0"
+  }
+}
