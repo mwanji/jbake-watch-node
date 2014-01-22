@@ -4,10 +4,11 @@ var
   watchr = require("watchr"),
   debounce = require("debounce");
 
-var bake = (function () {
+var jbake = (function () {
     var mode, jbakeProcess;
 
-    var refresh = function () {
+    var bake = function () {
+      var self = this;
       if (mode === "serve") {
         console.log("Stopping JBake server...");
         jbakeProcess.kill();
@@ -23,13 +24,18 @@ var bake = (function () {
           return;
         }
         
-        jbakeProcess = spawn("jbake", ["-s"]);
-        mode = "serve";
-        jbakeProcess.stdout.pipe(process.stdout);
+        self.serve();
       });
     };
     
-    return debounce(refresh, 3000);
+    return {
+      bake: debounce(bake, 3000),
+      serve: function () {
+        jbakeProcess = spawn("jbake", ["-s"]);
+        mode = "serve";
+        jbakeProcess.stdout.pipe(process.stdout);
+      }
+    }
   }());
   
 watchr.watch({
@@ -38,8 +44,10 @@ watchr.watch({
   ignoreHiddenFiles: true,
   listener: function (type, filename) {
     console.log(type + ": " + filename);
-    bake();
+    jbake.bake();
   }
 });
+
+jbake.serve();
 
 console.log("Waiting for changes...");
