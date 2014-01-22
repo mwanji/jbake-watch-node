@@ -11,13 +11,14 @@
     "type": "git",
     "url": "git://github.com/mwanji/jbake-watch-node"
   },
-  "author": "Moandji Ezana",
+  "author": "Moandji Ezana <mwanji@gmail.com> (http://moandjiezana.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/mwanji/jbake-watch-node/issues"
   },
   "homepage": "https://github.com/mwanji/jbake-watch-node",
   "dependencies": {
-    "watch": "~0.8.0"
+    "debounce": "0.0.3",
+    "watchr": "2.4.8"
   }
 }

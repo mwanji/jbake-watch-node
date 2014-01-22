@@ -1,20 +1,45 @@
 var
   rootDir = process.cwd(),
-  watch = require("watch"),
-  spawn = require("child_process").spawn;
-  
-console.log("started from " + rootDir);
+  spawn = require("child_process").spawn,
+  watchr = require("watchr"),
+  debounce = require("debounce");
 
-var jbake = spawn("jbake");
-jbake.stdout.pipe(process.stdout);
-jbake.on("close", function (code) {
-  if (code !== 0) {
-    console.err("There were errors. jbake-watch will shut down.");
-    return;
-  }
+var bake = (function () {
+    var mode, jbakeProcess;
+
+    var refresh = function () {
+      if (mode === "serve") {
+        console.log("Stopping JBake server...");
+        jbakeProcess.kill();
+      }
+      
+      mode = "bake";
+      jbakeProcess = spawn("jbake");
+      jbakeProcess.stdout.pipe(process.stdout);
+      jbakeProcess.on("close", function (code) {
+        if (code !== 0) {
+          mode = null;
+          console.err("There were errors. JBake server not started.");
+          return;
+        }
+        
+        jbakeProcess = spawn("jbake", ["-s"]);
+        mode = "serve";
+        jbakeProcess.stdout.pipe(process.stdout);
+      });
+    };
+    
+    return debounce(refresh, 3000);
+  }());
   
-  jbake = spawn("jbake", ["-s"]);
-  jbake.stdout.pipe(process.stdout);
+watchr.watch({
+  paths: [rootDir],
+  ignorePaths: [rootDir + "/output"],
+  ignoreHiddenFiles: true,
+  listener: function (type, filename) {
+    console.log(type + ": " + filename);
+    bake();
+  }
 });
 
-
+console.log("Waiting for changes...");
