@@ -29,7 +29,7 @@ var jbake = (function () {
     };
     
     return {
-      bake: debounce(bake, 3000),
+      bake: debounce(bake, 2000),
       serve: function () {
         jbakeProcess = spawn("jbake", ["-s"]);
         mode = "serve";
