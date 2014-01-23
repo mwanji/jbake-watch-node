@@ -6,9 +6,7 @@ var
 module.exports = function (rootDir) {
   var jbakeProcess;
 
-  var bake = function () {
-    var self = this;
-    
+  var bake = debounce(function () {
     jbakeProcess = spawn("jbake");
     jbakeProcess.stdout.pipe(process.stdout);
     jbakeProcess.on("close", function (code) {
@@ -17,25 +15,22 @@ module.exports = function (rootDir) {
         return;
       }
     });
-  };
-  
+  }, 2000);
+
   return {
-    bake: debounce(bake, 2000),
     serve: function () {
-      jbakeProcess = spawn("jbake", ["-s"]);
-      jbakeProcess.stdout.pipe(process.stdout);
-    },
-    watch: function () {
-      var self = this;
       watchr.watch({
         paths: [rootDir],
         ignorePaths: [rootDir + "/output"],
         ignoreHiddenFiles: true,
         listener: function (type, filename) {
           console.log(type + ": " + filename);
-          self.bake();
+          bake();
         }
       });
+
+      jbakeProcess = spawn("jbake", ["-s"]);
+      jbakeProcess.stdout.pipe(process.stdout);
     }
   };
 };
