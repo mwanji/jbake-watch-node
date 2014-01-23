@@ -4,26 +4,18 @@ var
   debounce = require("debounce");
 
 module.exports = function (rootDir) {
-  var mode, jbakeProcess;
+  var jbakeProcess;
 
   var bake = function () {
     var self = this;
-    if (mode === "serve") {
-      console.log("Stopping JBake server.");
-      jbakeProcess.kill();
-    }
     
-    mode = "bake";
     jbakeProcess = spawn("jbake");
     jbakeProcess.stdout.pipe(process.stdout);
     jbakeProcess.on("close", function (code) {
       if (code !== 0) {
-        mode = null;
         console.err("There were errors. JBake server not started.");
         return;
       }
-      
-      self.serve();
     });
   };
   
@@ -31,7 +23,6 @@ module.exports = function (rootDir) {
     bake: debounce(bake, 2000),
     serve: function () {
       jbakeProcess = spawn("jbake", ["-s"]);
-      mode = "serve";
       jbakeProcess.stdout.pipe(process.stdout);
     },
     watch: function () {
