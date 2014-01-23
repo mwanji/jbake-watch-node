@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+var 
+  rootDir = process.cwd(),
+  jbakeWatch = require("../jbake-watch.js")(rootDir);
+
+jbakeWatch.watch();
+jbakeWatch.serve();
+
+console.log("Waiting for changes in " + rootDir + "...");

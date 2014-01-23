@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Reload JBake when files change",
   "main": "jbake-watch.js",
+  "bin": {
+    "jbakew": "./bin/jbakew"
+  },
+  "preferGlobal": true,
   "scripts": {
     "start": "node jbake-watch.js",
     "test": "echo \"Error: no test specified\" && exit 1"
